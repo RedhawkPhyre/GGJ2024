@@ -105,6 +105,17 @@ public class PlayerMovement : MonoBehaviour
         State oldState = state;
         if (hasMovement)
         {
+<<<<<<< HEAD
+            run = true;
+            walk = false;
+            crouch = false;
+            GetComponent<Animator>().SetBool("sprint", true);
+        }else if (Input.GetKey(KeyCode.LeftControl))
+        {
+            crouch = true;
+            run = false;
+            walk = false;
+=======
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 state = State.Running;
@@ -117,9 +128,52 @@ public class PlayerMovement : MonoBehaviour
             {
                 state = State.Walking;
             }
+>>>>>>> main
         }
         else if (state != State.Grabbed)
         {
+<<<<<<< HEAD
+            walk = true;
+            crouch = false;
+            run = false;
+            GetComponent<Animator>().SetBool("sprint", false);
+        }
+    }
+
+    private void movePlayer()
+    {
+        // Generate move speed and direction
+        moveDirection = orientation.right * horizontalInput + (orientation.forward * verticalInput);
+
+        // Check if player is shift walking
+        if (walk)
+        {
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxWalk);
+            rb.position += moveDirection * walkSpeed;
+        }
+
+        // Check if player is crouched
+        if (crouch)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxCrouch);
+            rb.position += moveDirection * crouchSpeed;
+        }
+        else
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        }
+
+        // Check if plater is running
+        if(run)
+        {
+            rb.AddForce(moveDirection.normalized * runSpeed * 10f, ForceMode.Force);
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxRun);
+        }
+       
+    }
+=======
             state = State.Idle;
         }
 
@@ -128,4 +182,5 @@ public class PlayerMovement : MonoBehaviour
             handleStateTransition(oldState, state);
         }
     }
+>>>>>>> main
 }
