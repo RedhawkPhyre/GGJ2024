@@ -12,7 +12,8 @@ namespace AgentTest {
             SmellSense nose = agent.gameObject.GetComponent<SmellSense>();
             HearSense ears = agent.gameObject.GetComponent<HearSense>();
 
-            if (ears.noise_history.Count >= 2)
+            Vector3 p;
+            if (ears.GetBelievedPosition(out p))
             {
                 return new Pursue();
             }
@@ -58,28 +59,14 @@ namespace AgentTest {
             ClickBrain agent = (ClickBrain)brain;
             nose = agent.gameObject.GetComponent<SmellSense>();
             ears = agent.gameObject.GetComponent<HearSense>();
-
-            believed_position = Vector3.zero;
-            foreach (var sound in ears.noise_history)
-            {
-                believed_position += sound.position;
-            }
-            believed_position /= ears.noise_history.Count;
         }
 
         public StateBase Think(AgentBrain brain)
         {
-            if (ears.noise_history.Count < 2)
+            if (!ears.GetBelievedPosition(out believed_position))
             {
                 return new Initial();
             }
-
-            believed_position = Vector3.zero;
-            foreach (var sound in ears.noise_history)
-            {
-                believed_position += sound.position;
-            }
-            believed_position /= ears.noise_history.Count;
             return null;
         }
     }
