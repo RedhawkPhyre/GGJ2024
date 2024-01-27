@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerSanity : MonoBehaviour
 {
-    public int maxSanity = 100;
-    public int currentSanity;
+    public float maxSanity = 100;
+    public float currentSanity;
+
     private int timer;
     private int rate = 10;
+
+    public Image sanityBar;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -20,11 +25,12 @@ public class PlayerSanity : MonoBehaviour
     {
         if (currentSanity <= 0)
         {
-           Destroy(gameObject);
+           //Destroy(gameObject);
         }
+        sanityBar.fillAmount = Mathf.Clamp(currentSanity/maxSanity,0,1);s
     }
 
-    public void GoCrazy(int damage)
+    public void GoCrazy(float damage)
     {
         currentSanity -= damage;
     }
