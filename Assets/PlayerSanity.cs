@@ -16,11 +16,23 @@ public class PlayerSanity : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (currentSanity <= 0)
+        {
+           // Destroy(gameObject);
+        }
     }
 
     public void GoCrazy(int damage)
     {
         currentSanity -= damage;
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Insanity Area"))
+        {
+            GoCrazy(1);
+
+        }
     }
 }

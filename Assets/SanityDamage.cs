@@ -12,6 +12,7 @@ public class SanityDamage : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+           playerSanity = other.gameObject.GetComponent<PlayerSanity>();
            initialSanity = playerSanity.currentSanity;
 
         }
