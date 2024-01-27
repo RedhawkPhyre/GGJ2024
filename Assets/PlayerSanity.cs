@@ -27,7 +27,7 @@ public class PlayerSanity : MonoBehaviour
         {
            //Destroy(gameObject);
         }
-        sanityBar.fillAmount = Mathf.Clamp(currentSanity/maxSanity,0,1);s
+        sanityBar.fillAmount = Mathf.Clamp(currentSanity/maxSanity,0,1);
     }
 
     public void GoCrazy(float damage)
