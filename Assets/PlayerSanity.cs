@@ -6,6 +6,8 @@ public class PlayerSanity : MonoBehaviour
 {
     public int maxSanity = 100;
     public int currentSanity;
+    private int timer;
+    private int rate = 10;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +20,7 @@ public class PlayerSanity : MonoBehaviour
     {
         if (currentSanity <= 0)
         {
-           // Destroy(gameObject);
+           Destroy(gameObject);
         }
     }
 
@@ -29,10 +31,15 @@ public class PlayerSanity : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("Insanity Area"))
+        timer++;
+        if (other.gameObject.CompareTag("Insanity Area") && timer % rate == 0)
         {
             GoCrazy(1);
-
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        timer = 0;
     }
 }
