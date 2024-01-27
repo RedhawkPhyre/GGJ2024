@@ -22,6 +22,28 @@ public class HearSense : MonoBehaviour
         noise_history.Add(new HearSense.Noise { alert=alert, position=position, time_created=Time.time });
     }
 
+    public bool GetBelievedPosition(out Vector3 position)
+    {
+        // Heavily prefer newer sounds to old sounds
+        Vector3 average_pos = Vector3.zero;
+        float weight_sum = 0.0f;
+        int index = 0;
+        foreach (var noise in noise_history)
+        {
+            float weight = Mathf.Exp(-0.5f * index);
+            weight_sum += weight;
+            average_pos += noise.position / weight;
+            index += 1;
+        }
+
+        position = average_pos / weight_sum;
+        if (weight_sum == 0.0f)
+        {
+            return false;
+        }
+        return true;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
