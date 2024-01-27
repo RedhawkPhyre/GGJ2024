@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
     public void Grab(GameObject source)
     {
         Debug.Log("Grabbed");
+        struggleHistory = new List<float>();
         handleStateTransition(state, State.Grabbed);
         state = State.Grabbed;
         transform.parent = source.transform;
@@ -60,7 +61,6 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
 
         startYScale = transform.localScale.y;
-
     }
 
     // Update is called once per frame
@@ -74,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
             if (Time.time - struggleHistory[i] >= struggleTimer)
             {
                 struggleHistory.RemoveRange(i, struggleHistory.Count - i);
+                Debug.Log("Cull struggle");
                 break;
             }
         }
@@ -132,7 +133,21 @@ public class PlayerMovement : MonoBehaviour
         bool hasMovement = horizontalInput != 0.0f || verticalInput != 0.0f;
 
         State oldState = state;
-        if (hasMovement)
+        if (state == State.Grabbed)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log("struggle");
+                struggleHistory.Add(Time.time);
+            }
+
+            if (struggleHistory.Count >= struggleNeeded)
+            {
+                Drop();
+                return;
+            }
+        }
+        else if (hasMovement)
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
@@ -150,19 +165,6 @@ public class PlayerMovement : MonoBehaviour
         else if (state != State.Grabbed)
         {
             state = State.Idle;
-        }
-        else if (state == State.Grabbed)
-        {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                struggleHistory.Add(Time.time);
-            }
-
-            if (struggleHistory.Count >= struggleNeeded)
-            {
-                Drop();
-                return;
-            }
         }
 
         if (oldState != state)

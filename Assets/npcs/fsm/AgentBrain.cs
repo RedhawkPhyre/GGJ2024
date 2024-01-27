@@ -3,13 +3,17 @@ using UnityEngine;
 public class AgentBrain : MonoBehaviour
 {
     public enum StartStates {
-        AgentTest
+        AgentTest,
+        ChaseTest
     }
 
     private StateBase GetStartState() {
         switch (start_state) {
             case StartStates.AgentTest:
                 return new AgentTest.Initial();
+            case StartStates.ChaseTest:
+                return new ChaseTest.Idle();
+
         }
         return null;
     }
