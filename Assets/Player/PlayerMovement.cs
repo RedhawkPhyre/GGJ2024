@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    enum State
+    {
+        Idle,
+        Walking,
+        Running,
+        Crouching,
+        Grabbed
+    }
+
+    State state;
 
     public Transform orientation;
 
-    // Run
-    public float runSpeed; // 10 is ideal
-    public float maxRun; // 5 is ideal
-    public bool run;
+    public float runSpeed;
+    public float walkSpeed;
+    public float crouchSpeed;
 
-    // Walk
-    public float walkSpeed; // 0.05 is ideal
-    public float maxWalk; // 3 is ideal
-    public bool walk = false;
-
-    // Crouch
-    public float crouchSpeed; // 0.02 is ideal
-    public float maxCrouch; // 1.5 is ideal
     public float crouchYScale;
     public float startYScale;
-    public bool crouch = false;
 
     float horizontalInput;
     float verticalInput;
@@ -34,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        state = State.Idle;
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
@@ -50,8 +52,47 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Update current positions
-        movePlayer();
+        // Generate move speed and direction
+        moveDirection = orientation.right * horizontalInput + (orientation.forward * verticalInput);
+        float speed = 0.0f;
+        switch (state)
+        {
+            case State.Idle:
+                break;
+            case State.Grabbed:
+                return;
+            case State.Walking:
+                speed = walkSpeed;
+                break;
+            case State.Running:
+                speed = runSpeed;
+                break;
+            case State.Crouching:
+                speed = crouchSpeed;
+                break;
+        }
+        rb.position += moveDirection.normalized * speed * Time.deltaTime;
+    }
+
+    private void handleStateTransition(State old_state, State new_state)
+    {
+        if (new_state == State.Crouching)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+        }
+        else if (old_state == State.Crouching)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        }
+
+        if (new_state == State.Running)
+        {
+            GetComponent<Animator>().SetBool("sprint", true);
+        }
+        else if (old_state == State.Running)
+        {
+            GetComponent<Animator>().SetBool("sprint", false);
+        }
     }
 
     private void getInput()
@@ -59,58 +100,37 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            run = true;
-            walk = false;
-            crouch = false;
-            GetComponent<Animator>().SetBool("sprint", true);
-        }else if (Input.GetKey(KeyCode.LeftControl))
-        {
-            crouch = true;
-            run = false;
-            walk = false;
-        }
-        else
-        {
-            walk = true;
-            crouch = false;
-            run = false;
-            GetComponent<Animator>().SetBool("sprint", false);
-        }
-    }
+        bool hasMovement = horizontalInput != 0.0f || verticalInput != 0.0f;
 
-    private void movePlayer()
-    {
-        // Generate move speed and direction
-        moveDirection = orientation.right * horizontalInput + (orientation.forward * verticalInput);
-
-        // Check if player is shift walking
-        if (walk)
+        State oldState = state;
+        if (hasMovement)
         {
-            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxWalk);
-            rb.position += moveDirection * walkSpeed;
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                state = State.Running;
+            }
+            else if (Input.GetKey(KeyCode.LeftControl))
+            {
+                state = State.Crouching;
+            }
+            else
+            {
+                state = State.Walking;
+            }
+        }
+        else if (state != State.Grabbed)
+        {
+            state = State.Idle;
         }
 
-        // Check if player is crouched
-        if (crouch)
+        if (oldState != state)
         {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxCrouch);
-            rb.position += moveDirection * crouchSpeed;
-        }
-        else
-        {
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            state = State.Idle;
         }
 
-        // Check if plater is running
-        if(run)
+        if (oldState != state)
         {
-            rb.AddForce(moveDirection.normalized * runSpeed * 10f, ForceMode.Force);
-            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxRun);
+            handleStateTransition(oldState, state);
         }
-       
     }
 }
