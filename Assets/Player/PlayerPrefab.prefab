@@ -434,16 +434,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orientation: {fileID: 5219512858760139933}
   runSpeed: 10
-  maxRun: 6
-  run: 0
-  walkSpeed: 0.075
-  maxWalk: 4
-  walk: 0
-  crouchSpeed: 0.02
-  maxCrouch: 1
+  walkSpeed: 6
+  crouchSpeed: 3
   crouchYScale: 0
   startYScale: 0
-  crouch: 0
 --- !u!54 &1970738071744452511
 Rigidbody:
   m_ObjectHideFlags: 0
