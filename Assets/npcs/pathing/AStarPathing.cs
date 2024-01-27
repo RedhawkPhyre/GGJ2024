@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AStarPathing: MonoBehaviour
 {
+    public LayerMask ground_layer;
     private List<Node> pathing_nodes;
     void Start() {
         var all_nodes = FindObjectsOfType<Node>();
@@ -15,12 +16,55 @@ public class AStarPathing: MonoBehaviour
         Node closest = null;
         float closest_distance = float.PositiveInfinity;
         foreach (var node in pathing_nodes) {
-            if (Vector3.Distance(position, node.transform.position) < closest_distance) {
+            if (
+                Vector3.Distance(position, node.transform.position) < closest_distance &&
+                !DoesPathIntersect(position, node.transform.position)
+            ) {
                 closest_distance = Vector3.Distance(position, node.transform.position);
                 closest = node;
             }
         }
         return closest;
+    }
+
+    private bool DoesPathIntersect(Vector3 a, Vector3 b)
+    {
+        Vector3 direction = Vector3.Normalize(b - a);
+        float distance = Vector3.Distance(a, b);
+        RaycastHit info;
+        return Physics.SphereCast(a, 0.5f * 1.0f, direction, out info, distance, ~ground_layer);
+    }
+
+    public List<Vector3> RefinePath(Vector3 from, Vector3 to, in List<Vector3> path)
+    {
+        // Go through path, and adjust waypoints to allow for LOS movement
+        path.Insert(0, from);
+        path.Add(to);
+        List<Vector3> refined_path = new List<Vector3>();
+        bool first = true;
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            for (int j = path.Count - 1; j > i; j--)
+            {
+                if (!DoesPathIntersect(path[i], path[j]))
+                {
+                    Debug.DrawLine(path[i], path[j], Color.blue, 60.0f, false);
+                    if (first)
+                    {
+                        refined_path.Add(path[i]);
+                        first = false;
+                    }
+                    refined_path.Add(path[j]);
+                    i = j - 1;
+                    break;
+                }
+                else { 
+                Debug.DrawLine(path[i], path[j], Color.white, 60.0f, false);
+                }
+            }
+        }
+
+        return refined_path;
     }
 
     public List<Vector3> FindPath(Vector3 from, Vector3 to) {

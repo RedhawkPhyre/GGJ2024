@@ -21,6 +21,7 @@ public class ClickBrain : AgentBrain
             if (GetRayHit(out point)) {
                 Debug.Log("Path to");
                 path = GetComponent<AStarPathing>().FindPath(transform.position, point);
+                path = GetComponent<AStarPathing>().RefinePath(transform.position, point, path);
             }
         } else if (Input.GetKeyUp(KeyCode.Alpha1)) {
             Vector3 point;
