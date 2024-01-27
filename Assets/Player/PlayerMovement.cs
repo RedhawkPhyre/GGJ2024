@@ -31,6 +31,26 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
+    public int struggleNeeded = 10;
+    public float struggleTimer = 3.0f;
+    List<float> struggleHistory = new List<float>();
+
+    public void Grab(GameObject source)
+    {
+        Debug.Log("Grabbed");
+        handleStateTransition(state, State.Grabbed);
+        state = State.Grabbed;
+        transform.parent = source.transform;
+    }
+
+    public void Drop()
+    {
+        Debug.Log("Dropped");
+        handleStateTransition(state, State.Idle);
+        state = State.Idle;
+        transform.parent = null;
+    }
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -48,6 +68,15 @@ public class PlayerMovement : MonoBehaviour
     {
         // Get current axis locations
         getInput();
+
+        for (int i = 0; i < struggleHistory.Count; i++)
+        {
+            if (Time.time - struggleHistory[i] >= struggleTimer)
+            {
+                struggleHistory.RemoveRange(i, struggleHistory.Count - i);
+                break;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -121,6 +150,19 @@ public class PlayerMovement : MonoBehaviour
         else if (state != State.Grabbed)
         {
             state = State.Idle;
+        }
+        else if (state == State.Grabbed)
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                struggleHistory.Add(Time.time);
+            }
+
+            if (struggleHistory.Count >= struggleNeeded)
+            {
+                Drop();
+                return;
+            }
         }
 
         if (oldState != state)
