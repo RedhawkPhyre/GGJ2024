@@ -9,6 +9,14 @@ namespace AgentTest {
             if (agent.path != null && agent.path.Count > 0) {
                 return new FollowPath();
             }
+            SmellSense nose = agent.gameObject.GetComponent<SmellSense>();
+            HearSense ears = agent.gameObject.GetComponent<HearSense>();
+
+            if (ears.noise_history.Count >= 2)
+            {
+                return new Pursue();
+            }
+
             return null;
         }
     }
@@ -34,6 +42,44 @@ namespace AgentTest {
                 Debug.Log("at target");
                 return new Initial();
             }
+            return null;
+        }
+    }
+
+    public class Pursue: StateBase
+    {
+        SmellSense nose;
+        HearSense ears;
+
+        Vector3 believed_position;
+
+        void OnEnter(AgentBrain brain)
+        {
+            ClickBrain agent = (ClickBrain)brain;
+            nose = agent.gameObject.GetComponent<SmellSense>();
+            ears = agent.gameObject.GetComponent<HearSense>();
+
+            believed_position = Vector3.zero;
+            foreach (var sound in ears.noise_history)
+            {
+                believed_position += sound.position;
+            }
+            believed_position /= ears.noise_history.Count;
+        }
+
+        public StateBase Think(AgentBrain brain)
+        {
+            if (ears.noise_history.Count < 2)
+            {
+                return new Initial();
+            }
+
+            believed_position = Vector3.zero;
+            foreach (var sound in ears.noise_history)
+            {
+                believed_position += sound.position;
+            }
+            believed_position /= ears.noise_history.Count;
             return null;
         }
     }

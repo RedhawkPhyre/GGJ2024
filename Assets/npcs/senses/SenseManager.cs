@@ -30,6 +30,8 @@ public class SenseManager : MonoBehaviour
         AiDebugVars debug_vars = AiDebugVars.GetDebugVars();
         if (debug_vars && debug_vars.DrawSounds)
         {
+            Debug.Log("Sound spawned:");
+            Debug.Log(position);
         }
 
         foreach (var ear in hear_senses) {
@@ -42,6 +44,8 @@ public class SenseManager : MonoBehaviour
         AiDebugVars debug_vars = AiDebugVars.GetDebugVars();
         if (debug_vars && debug_vars.DrawSmell)
         {
+            Debug.Log("Scent spawned:");
+            Debug.Log(position);
         }
 
         foreach (var nose in smell_senses) {
