@@ -48,7 +48,6 @@ public class AStarPathing: MonoBehaviour
             {
                 if (!DoesPathIntersect(path[i], path[j]))
                 {
-                    Debug.DrawLine(path[i], path[j], Color.blue, 60.0f, false);
                     if (first)
                     {
                         refined_path.Add(path[i]);
@@ -58,9 +57,7 @@ public class AStarPathing: MonoBehaviour
                     i = j - 1;
                     break;
                 }
-                else { 
-                Debug.DrawLine(path[i], path[j], Color.white, 60.0f, false);
-                }
+                
             }
         }
 
