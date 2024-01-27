@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
             run = true;
             walk = false;
             crouch = false;
-	GetComponent<Animator>().SetBool("sprint", true);
+            GetComponent<Animator>().SetBool("sprint", true);
         }else if (Input.GetKey(KeyCode.LeftControl))
         {
             crouch = true;
@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
             walk = true;
             crouch = false;
             run = false;
-	GetComponent<Animator>().SetBool("sprint", false);
+            GetComponent<Animator>().SetBool("sprint", false);
         }
     }
 
