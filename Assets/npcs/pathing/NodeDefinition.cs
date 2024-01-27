@@ -18,6 +18,8 @@ public class Node : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        AiDebugVars debug_vars = AiDebugVars.GetDebugVars();
+        if (!debug_vars || !debug_vars.DrawGizmos) { return; }
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(transform.position, 0.2f);
         Gizmos.color = Color.blue;
