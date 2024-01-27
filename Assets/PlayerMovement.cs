@@ -9,17 +9,17 @@ public class PlayerMovement : MonoBehaviour
 
     // Run
     public float runSpeed; // 10 is ideal
-    public float maxRun; // 5 is ideal
+    public float maxRun; // 6 is ideal
     public bool run;
 
     // Walk
-    public float walkSpeed; // 0.05 is ideal
-    public float maxWalk; // 3 is ideal
+    public float walkSpeed; // 0.075 is ideal
+    public float maxWalk; // 4 is ideal
     public bool walk = false;
 
     // Crouch
     public float crouchSpeed; // 0.02 is ideal
-    public float maxCrouch; // 1.5 is ideal
+    public float maxCrouch; // 1 is ideal
     public float crouchYScale;
     public float startYScale;
     public bool crouch = false;
