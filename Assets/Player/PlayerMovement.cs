@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
     public float crouchYScale;
     public float startYScale;
 
+    public bool hiding = false;
+
     float horizontalInput;
     float verticalInput;
 
