@@ -1,0 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Dissipate : MonoBehaviour
+{
+<<<<<<< HEAD:Assets/Gas/Dissipate.cs
+    public float delay = 10;
+=======
+    public bool sees_target = false;
+    public Vector3 target_position;
+
+>>>>>>> bailey-dev:Assets/npcs/senses/SightSense.cs
+    // Start is called before the first frame update
+    void Start()
+    {
+        Destroy(gameObject, delay);
+    }
+
+<<<<<<< HEAD:Assets/Gas/Dissipate.cs
+    // Update is called once per frame
+    void Update()
+    { 
+=======
+    public bool GetBelievedPosition(out Vector3 target)
+    {
+        target = target_position;
+        return sees_target;
+>>>>>>> bailey-dev:Assets/npcs/senses/SightSense.cs
+    }
+}
