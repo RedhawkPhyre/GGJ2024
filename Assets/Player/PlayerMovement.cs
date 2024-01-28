@@ -38,6 +38,12 @@ public class PlayerMovement : MonoBehaviour
     public Vector3[] checkpoint_positions = new Vector3[3];
     public int current_checkpoint = 0;
 
+    //running sound
+    public AudioSource squeakyRunAudio;
+    public AudioSource runStopAudio;
+
+    bool hasMovement;
+
     public void Grab(GameObject source)
     {
         Debug.Log("Grabbed");
@@ -86,6 +92,8 @@ public class PlayerMovement : MonoBehaviour
                 break;
             }
         }
+
+        handleRunSound();
     }
 
     private void FixedUpdate()
@@ -139,7 +147,7 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        bool hasMovement = horizontalInput != 0.0f || verticalInput != 0.0f;
+        hasMovement = horizontalInput != 0.0f || verticalInput != 0.0f;
 
         State oldState = state;
         if (state == State.Grabbed)
@@ -179,6 +187,22 @@ public class PlayerMovement : MonoBehaviour
         if (oldState != state)
         {
             handleStateTransition(oldState, state);
+        }
+    }
+
+    private void handleRunSound()
+    {
+        if (state == State.Running && hasMovement)
+        {
+            squeakyRunAudio.enabled = true;
+        }
+        else
+        {
+            squeakyRunAudio.enabled = false;
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                runStopAudio.PlayOneShot(runStopAudio.clip);
+            }
         }
     }
 }
