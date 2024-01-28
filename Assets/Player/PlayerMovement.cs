@@ -31,6 +31,27 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
+    public int struggleNeeded = 10;
+    public float struggleTimer = 3.0f;
+    List<float> struggleHistory = new List<float>();
+
+    public void Grab(GameObject source)
+    {
+        Debug.Log("Grabbed");
+        struggleHistory = new List<float>();
+        handleStateTransition(state, State.Grabbed);
+        state = State.Grabbed;
+        transform.parent = source.transform;
+    }
+
+    public void Drop()
+    {
+        Debug.Log("Dropped");
+        handleStateTransition(state, State.Idle);
+        state = State.Idle;
+        transform.parent = null;
+    }
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -40,7 +61,6 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
 
         startYScale = transform.localScale.y;
-
     }
 
     // Update is called once per frame
@@ -48,6 +68,16 @@ public class PlayerMovement : MonoBehaviour
     {
         // Get current axis locations
         getInput();
+
+        for (int i = 0; i < struggleHistory.Count; i++)
+        {
+            if (Time.time - struggleHistory[i] >= struggleTimer)
+            {
+                struggleHistory.RemoveRange(i, struggleHistory.Count - i);
+                Debug.Log("Cull struggle");
+                break;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -103,7 +133,21 @@ public class PlayerMovement : MonoBehaviour
         bool hasMovement = horizontalInput != 0.0f || verticalInput != 0.0f;
 
         State oldState = state;
-        if (hasMovement)
+        if (state == State.Grabbed)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log("struggle");
+                struggleHistory.Add(Time.time);
+            }
+
+            if (struggleHistory.Count >= struggleNeeded)
+            {
+                Drop();
+                return;
+            }
+        }
+        else if (hasMovement)
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {

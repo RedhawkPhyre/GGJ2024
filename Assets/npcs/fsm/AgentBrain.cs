@@ -3,13 +3,25 @@ using UnityEngine;
 public class AgentBrain : MonoBehaviour
 {
     public enum StartStates {
-        AgentTest
+        AgentTest,
+        ChaseTest,
+        Smeller,
+        Seer,
+        Fetus
     }
 
     private StateBase GetStartState() {
         switch (start_state) {
             case StartStates.AgentTest:
                 return new AgentTest.Initial();
+            case StartStates.ChaseTest:
+                return new ChaseTest.Idle();
+            case StartStates.Smeller:
+                return new Smeller.Observe();
+            case StartStates.Seer:
+                return new Seer.Idle();
+            case StartStates.Fetus:
+                return new Fetus.Spawn();
         }
         return null;
     }

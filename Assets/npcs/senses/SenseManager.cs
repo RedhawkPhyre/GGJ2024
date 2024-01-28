@@ -10,6 +10,15 @@ public class SenseManager : MonoBehaviour
     List<HearSense> hear_senses = new List<HearSense>();
     List<SmellSense> smell_senses = new List<SmellSense>();
 
+    void Update()
+    {
+        foreach (var eyes in sight_senses)
+        {
+            eyes.sees_target = false;
+            eyes.target_position = Vector3.zero;
+        }
+    }
+
     public void RegisterSense(SightSense sense)
     {
         sight_senses.Add(sense);

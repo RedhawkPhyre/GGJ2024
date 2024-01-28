@@ -30,9 +30,9 @@ public class HearSense : MonoBehaviour
         int index = 0;
         foreach (var noise in noise_history)
         {
-            float weight = Mathf.Exp(-0.5f * index);
+            float weight = Mathf.Exp(-0.5f * (noise_history.Count - index - 1));
             weight_sum += weight;
-            average_pos += noise.position / weight;
+            average_pos += noise.position * weight;
             index += 1;
         }
 

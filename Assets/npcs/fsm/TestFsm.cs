@@ -18,6 +18,11 @@ namespace AgentTest {
                 return new Pursue();
             }
 
+            if (nose.GetBelievedPosition(out p) && nose.scent_history.Count >= 5)
+            {
+                return new Sniff();
+            }
+
             return null;
         }
     }
@@ -49,24 +54,30 @@ namespace AgentTest {
 
     public class Pursue: StateBase
     {
-        SmellSense nose;
-        HearSense ears;
-
-        Vector3 believed_position;
-
-        void OnEnter(AgentBrain brain)
-        {
-            ClickBrain agent = (ClickBrain)brain;
-            nose = agent.gameObject.GetComponent<SmellSense>();
-            ears = agent.gameObject.GetComponent<HearSense>();
-        }
-
         public StateBase Think(AgentBrain brain)
         {
+            HearSense ears = brain.agent.gameObject.GetComponent<HearSense>();
+            Vector3 believed_position = Vector3.zero;
             if (!ears.GetBelievedPosition(out believed_position))
             {
                 return new Initial();
             }
+            GameObject.Find("TestBall").transform.position = believed_position;
+            return null;
+        }
+    }
+
+    public class Sniff: StateBase
+    {
+        public StateBase Think(AgentBrain brain)
+        {
+            SmellSense ears = brain.agent.gameObject.GetComponent<SmellSense>();
+            Vector3 believed_position = Vector3.zero;
+            if (!ears.GetBelievedPosition(out believed_position))
+            {
+                return new Initial();
+            }
+            GameObject.Find("TestBall").transform.position = believed_position;
             return null;
         }
     }
