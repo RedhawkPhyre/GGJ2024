@@ -22,6 +22,7 @@ public class CapsuleCast : MonoBehaviour
     private float currentHitDist;
     private Vector3 dir = new Vector3(Mathf.Sin(1), 0, Mathf.Cos(1));
 
+    private float rotSpeed = 10f;
     private bool checkRight;
     private bool playerFound;
     private bool frontBlocked;
@@ -90,7 +91,23 @@ public class CapsuleCast : MonoBehaviour
 
     }
 
-    private void scanObstacles()
+private void rotateRight() 
+
+{
+
+transform.Rotate(transform.up* Time.deltaTime* rotSpeed);
+
+}
+
+private void rotateLeft()
+
+{
+
+    transform.Rotate(transform.up * Time.deltaTime * -rotSpeed);
+
+}
+
+private void scanObstacles()
     {
         RaycastHit hit;
         if (Physics.CapsuleCast(pt1, pt2, radius, direction, out hit, maxDist, layerMask, QueryTriggerInteraction.UseGlobal))
