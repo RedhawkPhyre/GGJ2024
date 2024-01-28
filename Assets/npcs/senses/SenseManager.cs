@@ -19,7 +19,7 @@ public class SenseManager : MonoBehaviour
             Vector3 d = sight_target.transform.position - p;
             if (d.magnitude < eyes.range)
             {
-                //eyes.sees_target = !Physics.Raycast(p, Vector3.Normalize(d), eyes.range, ~player);
+                eyes.sees_target = !Physics.Raycast(p, Vector3.Normalize(d), eyes.range, ~player);
             }
             eyes.target_position = sight_target.transform.position;
         }

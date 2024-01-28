@@ -51,13 +51,16 @@ public class PlayerMovement : MonoBehaviour
 
     public void Drop()
     {
-        Debug.Log("Dropped");
-        handleStateTransition(state, State.Idle);
-        state = State.Idle;
-        Vector3 position = transform.parent.position;
-        transform.parent = null;
-        transform.position = position;
-        transform.GetComponent<Rigidbody>().isKinematic = true;
+        if (state == State.Grabbed)
+        {
+            Debug.Log("Dropped");
+            handleStateTransition(state, State.Idle);
+            state = State.Idle;
+            Vector3 position = transform.parent.position;
+            transform.parent = null;
+            transform.position = position;
+            transform.GetComponent<Rigidbody>().isKinematic = true;
+        }
     }
 
     // Start is called before the first frame update
