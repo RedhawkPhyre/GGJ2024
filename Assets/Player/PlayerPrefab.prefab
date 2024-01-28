@@ -394,6 +394,7 @@ GameObject:
   - component: {fileID: 7580278486804158639}
   - component: {fileID: 1970738071744452511}
   - component: {fileID: 5340631452465049550}
+  - component: {fileID: 2076372684528636282}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -438,6 +439,8 @@ MonoBehaviour:
   crouchSpeed: 3
   crouchYScale: 0
   startYScale: 0
+  struggleNeeded: 10
+  struggleTimer: 3
 --- !u!54 &1970738071744452511
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -486,6 +489,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2076372684528636282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8668570970916574784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e64799b4603b4b208b725fad3eceb1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxSanity: 100
+  currentSanity: 0
+  sanityBar: {fileID: 0}
 --- !u!1 &8851253844937439650
 GameObject:
   m_ObjectHideFlags: 0
