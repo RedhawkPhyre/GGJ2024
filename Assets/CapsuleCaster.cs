@@ -4,104 +4,107 @@ using UnityEngine;
 
 public class CapsuleCast : MonoBehaviour
 {
-    public GameObject currentHitObject;
+
+    public Transform orientation;
+
+    public GameObject currentFrontObject;
+    public GameObject leftObject;
+    public GameObject rightObject;
+    public Rigidbody rb;
 
     public Vector3 pt1;
     public Vector3 pt2;
     public float radius;
-    public float maxDist = 20;
-    public LayerMask layerMask; 
+    public float maxDist = 5;
+    public LayerMask layerMask;
 
     private Vector3 direction;
-
     private float currentHitDist;
+    private Vector3 dir = new Vector3(Mathf.Sin(1), 0, Mathf.Cos(1));
 
-    private bool checkRight; 
+    private bool checkRight;
+    private bool playerFound;
+    private bool frontBlocked;
+    private bool leftBlocked;
+    private bool rightBlocked;
+    private bool stillBlocked = true;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        direction = transform.forward;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        
         pt1 = new Vector3(transform.position.x, transform.position.y+radius, transform.position.z);
         pt2 = new Vector3(transform.position.x, transform.position.y - radius, transform.position.z);
-        direction = transform.forward;
+
         RaycastHit hit;
 
-        float angle = 1;
-        var dir = new Vector3(Mathf.Sin(1), 0, Mathf.Cos(1));
-        var right_dir = direction;
-        var left_dir = direction;
+        Vector3 dir = new Vector3(Mathf.Sin(1), 0, Mathf.Cos(1));
+        Vector3 right_dir = direction + dir;
+        Vector3 left_dir = direction - dir;
 
-
-        int count = 0;
-
-        if (Physics.CapsuleCast(pt1, pt2, radius, direction, out hit, maxDist, layerMask, QueryTriggerInteraction.UseGlobal)) 
+        scanObstacles();
+        if (frontBlocked)
         {
-            currentHitObject = hit.transform.gameObject;
-            currentHitDist = hit.distance;
-            Debug.Log("was hit at: " + direction);
+
+        }
+
+        if (Physics.CapsuleCast(pt1, pt2, radius, left_dir, out hit, maxDist, layerMask, QueryTriggerInteraction.UseGlobal))
+        {
+            
+            leftObject = hit.transform.gameObject;
+
+            //Debug.Log("Found: " + leftObject + " at: " + left_dir);
         }
         else
         {
-            Debug.Log("No object directly in front");
+            Debug.Log("left not blocked anymore, ended at: " + left_dir);
+            leftObject = null;
+            currentHitDist = maxDist;
+            
+        }
 
-            while(!Physics.CapsuleCast(pt1, pt2, radius, direction, out hit, maxDist, layerMask, QueryTriggerInteraction.UseGlobal))
-            {
-                count += 1;
-                if (checkRight)
-                {
-                    right_dir += dir;
-                    Debug.Log("rirght dir: " + right_dir);
-                    direction = right_dir;
-                    Debug.Log("full left: " + direction);
-                    checkRight = false;
-                }
-                else
-                {
-                    left_dir -= dir;
-                    Debug.Log("left dir: " + left_dir);
-                    direction = left_dir;
-                    Debug.Log("full left: " + direction);
-                    checkRight = true;
-                }
+        if (Physics.CapsuleCast(pt1, pt2, radius, right_dir, out hit, maxDist, layerMask, QueryTriggerInteraction.UseGlobal))
+        { 
 
-
-
-                //Debug.Log("Running new angles: " + checkRight + " " + direction);
-                //Mathf.Clamp(direction.x, -90f, 90f);
-                //Mathf.Clamp(direction.y, -90f, 90f);
-
-                if (Physics.CapsuleCast(pt1, pt2, radius, direction, out hit, maxDist, layerMask, QueryTriggerInteraction.UseGlobal))
-                {
-                    currentHitObject = hit.transform.gameObject;
-                    currentHitDist = hit.distance;
-                    break;
-                    //Debug.Log(direction + " was hit ");
-                }
-
-                if(count == 6)
-                {
-                    break;
-                }
-                
-            }
+            rightObject = hit.transform.gameObject;
+            // Debug.Log("Found: " + rightObject + " at: " + right_dir);
 
         }
+        else
+        {
+            Debug.Log("right not blocked anymore, ended at: " + right_dir);
+            rightObject = null;
+            currentHitDist = maxDist;
+
+        }
+
+
     }
 
-    private void OnDrawGizmos()
+    private void scanObstacles()
     {
-        Gizmos.color = Color.red;
-        Debug.DrawLine(pt1, pt1 + direction * currentHitDist);
-        Debug.DrawLine(pt2, pt2 + direction * currentHitDist);
+        RaycastHit hit;
+        if (Physics.CapsuleCast(pt1, pt2, radius, direction, out hit, maxDist, layerMask, QueryTriggerInteraction.UseGlobal))
+        {
+            currentFrontObject = hit.transform.gameObject;
+            currentHitDist = hit.distance;
+            if (currentFrontObject == GameObject.Find("Player"))
+            {
+                Debug.Log("Player found at: " + direction);
+                playerFound = true;
+            }
 
-        Gizmos.DrawWireSphere(pt1 + direction * currentHitDist, radius);
-        Gizmos.DrawWireSphere(pt2 + direction * currentHitDist, radius);
+            frontBlocked = true;
+            
+        }
     }
 }
