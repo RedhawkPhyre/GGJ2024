@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Gas
+  - Zone Change
+  - Zone 2 Trigger
+  - Zone 1 Trigger
+  - Zone 1 Gas Checkpoint
+  - Zone 2 Gas Checkpoint
   layers:
   - Default
   - TransparentFX
