@@ -78,10 +78,10 @@ namespace Smeller {
             GameObject target = nodes[Random.Range(0, nodes.Length)];
 
             path = brain.agent.GetComponent<AStarPathing>().FindPath(
-                brain.agent.transform.position, target.transform.position
+                brain.transform.position, target.transform.position
             );
             path = brain.agent.GetComponent<AStarPathing>().RefinePath(
-                brain.agent.transform.position, target.transform.position, path
+                brain.transform.position, target.transform.position, path
             );
 
             path_state = State.AtNode;
@@ -129,7 +129,7 @@ namespace Smeller {
             HearSense ears = brain.agent.GetComponent<HearSense>();
             SmellSense nose = brain.agent.GetComponent<SmellSense>();
 
-            float distance_to_target = (brain.agent.transform.position - target).magnitude;
+            float distance_to_target = (target - brain.transform.position).magnitude;
             Vector3 believed_position;
             if (
                 distance_to_target <= 2.0f &&
@@ -140,6 +140,7 @@ namespace Smeller {
                 if (time_at_target < 0.0f)
                 {
                     time_at_target = Time.time;
+                    brain.agent.GetComponent<AiController>().Stop();
                 } else if (Time.time - time_at_target >= 5.0f)
                 {
                     return new Observe();
@@ -149,13 +150,13 @@ namespace Smeller {
             target += 5.0f * Utils.GetTargetPos(brain);
             target /= 6.0f;
 
-            Vector3 direction = brain.agent.transform.position - target;
+            Vector3 direction = target - brain.transform.position;
             brain.agent.GetComponent<AiController>().Run(direction);
 
             Vector3 player_pos;
             if (eyes.GetBelievedPosition(out player_pos))
             {
-                if ((player_pos - brain.agent.transform.position).magnitude <= 10.0f)
+                if ((player_pos - brain.transform.position).magnitude <= 10.0f)
                 {
                     return new Grab();
                 }
@@ -167,22 +168,67 @@ namespace Smeller {
 
     public class Grab: StateBase
     {
+        Vector3 grab_direction;
+        float time_enter = Time.time;
         public void OnEnter(AgentBrain brain)
         {
-            Vector3 direction = brain.agent.transform.position - SenseManager.GetSenseManager().sight_target.transform.position;
-            brain.agent.GetComponent<AiController>().Grab(direction);
+            grab_direction = brain.transform.position - SenseManager.GetSenseManager().sight_target.transform.position;
         }
 
         public StateBase Think(AgentBrain brain)
         {
+            brain.agent.GetComponent<AiController>().Grab(grab_direction);
+            if (Time.time - time_enter >= 1.0f)
+            {
+                return new Drag();
+            }
             return null;
         }
     }
 
     public class Drag: StateBase
     {
+        PlayerMovement player;
+        List<Vector3> path;
+        Vector3 checkpoint_position;
+        public void OnEnter(AgentBrain brain)
+        {
+            player = SenseManager.GetSenseManager().sight_target.GetComponent<PlayerMovement>();
+            player.Grab(brain.agent);
+            checkpoint_position = player.checkpoint_positions[player.current_checkpoint];
+            path = brain.agent.GetComponent<AStarPathing>().FindPath(
+                brain.transform.position, checkpoint_position
+            );
+            path = brain.agent.GetComponent<AStarPathing>().RefinePath(
+                brain.transform.position, checkpoint_position, path
+            );
+        }
+
+        public void OnExit(AgentBrain brain)
+        {
+            player = SenseManager.GetSenseManager().sight_target.GetComponent<PlayerMovement>();
+            player.Drop();
+        }
+
         public StateBase Think(AgentBrain brain)
         {
+            Vector3 direction = path[0] - brain.transform.position;
+            brain.agent.GetComponent<AiController>().Walk(direction);
+            if (direction.magnitude <= 2.0f)
+            {
+                path.RemoveAt(0);
+            }
+
+            if (path.Count == 0)
+            {
+                return new DragSuccess();
+            }
+
+            if (player.state != PlayerMovement.State.Grabbed)
+            {
+                return new DragFailed();
+            }
+
             return null;
         }
     }
@@ -190,6 +236,10 @@ namespace Smeller {
     public class DragFailed: StateBase
     {
         float time_entered = Time.time;
+        public void OnEnter(AgentBrain brain)
+        {
+            brain.agent.GetComponent<AiController>().Stop();
+        }
         public StateBase Think(AgentBrain brain)
         {
             SmellBrain agent = (SmellBrain)brain;
@@ -205,6 +255,12 @@ namespace Smeller {
     public class DragSuccess: StateBase
     {
         float time_entered = Time.time;
+
+        public void OnEnter(AgentBrain brain)
+        {
+            brain.agent.GetComponent<AiController>().Stop();
+        }
+
         public StateBase Think(AgentBrain brain)
         {
             SmellBrain agent = (SmellBrain)brain;

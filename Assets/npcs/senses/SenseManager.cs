@@ -12,10 +12,16 @@ public class SenseManager : MonoBehaviour
 
     void Update()
     {
+        LayerMask player = LayerMask.GetMask("NonBlocking");
         foreach (var eyes in sight_senses)
         {
-            eyes.sees_target = false;
-            eyes.target_position = Vector3.zero;
+            Vector3 p = eyes.transform.position;
+            Vector3 d = sight_target.transform.position - p;
+            if (d.magnitude < eyes.range)
+            {
+                //eyes.sees_target = !Physics.Raycast(p, Vector3.Normalize(d), eyes.range, ~player);
+            }
+            eyes.target_position = sight_target.transform.position;
         }
     }
 

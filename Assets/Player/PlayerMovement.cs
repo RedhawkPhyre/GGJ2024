@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    enum State
+    public enum State
     {
         Idle,
         Walking,
@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
         Grabbed
     }
 
-    State state;
+    public State state;
 
     public Transform orientation;
 
@@ -35,13 +35,18 @@ public class PlayerMovement : MonoBehaviour
     public float struggleTimer = 3.0f;
     List<float> struggleHistory = new List<float>();
 
+    public Vector3[] checkpoint_positions = new Vector3[3];
+    public int current_checkpoint = 0;
+
     public void Grab(GameObject source)
     {
         Debug.Log("Grabbed");
         struggleHistory = new List<float>();
         handleStateTransition(state, State.Grabbed);
         state = State.Grabbed;
-        transform.parent = source.transform;
+        transform.SetParent(source.transform);
+        transform.localPosition = new Vector3(0, 0, 0);
+        transform.GetComponent<Rigidbody>().isKinematic = false;
     }
 
     public void Drop()
@@ -49,7 +54,10 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Dropped");
         handleStateTransition(state, State.Idle);
         state = State.Idle;
+        Vector3 position = transform.parent.position;
         transform.parent = null;
+        transform.position = position;
+        transform.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     // Start is called before the first frame update
@@ -90,6 +98,7 @@ public class PlayerMovement : MonoBehaviour
             case State.Idle:
                 break;
             case State.Grabbed:
+                transform.position = transform.parent.position;
                 return;
             case State.Walking:
                 speed = walkSpeed;

@@ -8,6 +8,11 @@ TagManager:
   - Zone1GasNodes
   - Zone2PathNodes
   - Zome2GasNodes
+  - Gas
+  - Zone 2 Gas Checkpoint
+  - Zone 1 Gas Checkpoint
+  - Zone 1 Trigger
+  - Zone 2 Trigger
   layers:
   - Default
   - TransparentFX
@@ -18,7 +23,7 @@ TagManager:
   - Ground
   - Arm
   - NonBlocking
-  - 
+  - Player
   - 
   - 
   - 
