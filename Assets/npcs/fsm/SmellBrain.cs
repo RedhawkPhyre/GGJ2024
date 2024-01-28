@@ -1,18 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class SmellBrain : MonoBehaviour
+public class SmellBrain : AgentBrain
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public float patrol_change_time = 20.0f;
+    public float failure_anger_time = 10.0f;
+    public float success_celebrate_time = 20.0f;
 }
