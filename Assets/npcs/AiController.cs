@@ -30,19 +30,19 @@ public class AiController : MonoBehaviour
     public void Walk(Vector3 direction)
     {
         state = State.Walking;
-        state_direction = direction;
+        state_direction = Vector3.Normalize(direction);
     }
 
     public void Run(Vector3 direction)
     {
         state = State.Running;
-        state_direction = direction;
+        state_direction = Vector3.Normalize(direction);
     }
 
     public void Grab(Vector3 direction)
     {
         state = State.Grabbing;
-        state_direction = direction;
+        state_direction = Vector3.Normalize(direction);
     }
 
     public void Stop()
