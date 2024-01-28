@@ -6,7 +6,7 @@ public class teleport_to_funhouse : MonoBehaviour
 {
     // Start is called before the first frame update
 void OnTriggerEnter(Collider hit) {
-GameObject.Find("Player").transform.position = GameObject.Find("door_exit").transform.position;
+GameObject.Find("Player").transform.position = GameObject.Find("wheel_enter").transform.position;
 
 }
 
