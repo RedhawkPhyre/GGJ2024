@@ -27,6 +27,11 @@ public class PlayerMovement : MonoBehaviour
     float horizontalInput;
     float verticalInput;
 
+    //running sound
+    public AudioSource squeakyRunAudio;
+    public AudioSource runStopAudio;
+    public bool moving = false;
+
     Vector3 moveDirection;
 
     Rigidbody rb;
@@ -52,6 +57,9 @@ public class PlayerMovement : MonoBehaviour
     {
         // Update current positions
         movePlayer();
+
+        //Play Sounds
+        playRunSound();
     }
 
     private void getInput()
@@ -75,6 +83,14 @@ public class PlayerMovement : MonoBehaviour
             walk = true;
             crouch = false;
             run = false;
+        }
+
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        {
+            moving = true;
+        } else
+        {
+            moving = false;
         }
     }
 
@@ -108,7 +124,25 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.AddForce(moveDirection.normalized * runSpeed * 10f, ForceMode.Force);
             rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxRun);
-        }
+
+            //play run audio
+            if(moving) squeakyRunAudio.enabled = true;
+        } 
        
+    }
+
+    private void playRunSound()
+    {
+        if (run && moving)
+        {
+            squeakyRunAudio.enabled = true;
+        } else
+        {
+            squeakyRunAudio.enabled = false;
+            if(Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                runStopAudio.PlayOneShot(runStopAudio.clip);
+            }
+        }
     }
 }
