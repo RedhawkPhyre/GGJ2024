@@ -4,7 +4,10 @@ public class AgentBrain : MonoBehaviour
 {
     public enum StartStates {
         AgentTest,
-        ChaseTest
+        ChaseTest,
+        Smeller,
+        Seer,
+        Fetus
     }
 
     private StateBase GetStartState() {
@@ -13,7 +16,12 @@ public class AgentBrain : MonoBehaviour
                 return new AgentTest.Initial();
             case StartStates.ChaseTest:
                 return new ChaseTest.Idle();
-
+            case StartStates.Smeller:
+                return new Smeller.Observe();
+            case StartStates.Seer:
+                return new Seer.Idle();
+            case StartStates.Fetus:
+                return new Fetus.Spawn();
         }
         return null;
     }

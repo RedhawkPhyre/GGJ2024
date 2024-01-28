@@ -18,15 +18,13 @@ namespace Smeller {
 
     public class Patrol: StateBase
     {
-        float time_entered = Time.time;
+        public void OnEnter(AgentBrain brain)
+        {
+
+        }
+
         public StateBase Think(AgentBrain brain)
         {
-            SmellBrain agent = (SmellBrain)brain;
-
-            if (Time.time - time_entered >= agent.patrol_change_time)
-            {
-                return new Observe();
-            }
             return null;
         }
     }

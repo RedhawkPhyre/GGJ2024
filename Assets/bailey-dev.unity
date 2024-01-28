@@ -1573,7 +1573,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   expire_time: 15
-  smell_radius: 5
+  smell_radius: 30.7
   sensitivity: 0
 --- !u!114 &1734758098
 MonoBehaviour:
