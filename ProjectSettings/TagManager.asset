@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Zone1PathNodes
+  - Zone1GasNodes
+  - Zone2PathNodes
+  - Zome2GasNodes
   layers:
   - Default
   - TransparentFX

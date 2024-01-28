@@ -18,6 +18,7 @@ namespace Smeller {
 
     public class Patrol: StateBase
     {
+        Vector3 path;
         public void OnEnter(AgentBrain brain)
         {
 
