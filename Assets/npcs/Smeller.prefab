@@ -53,12 +53,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5761acbec5eab2f589d22c766536422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walk_acceleration: 1
-  walk_speed: 4
-  run_acceleration: 3
-  run_speed: 10
-  grab_acceleration: 7
-  grab_speed: 12
+  walk_acceleration: 30
+  walk_speed: 60
+  run_acceleration: 80
+  run_speed: 180
+  grab_acceleration: 250
+  grab_speed: 250
   state: 0
   agent: {fileID: 3574057976070189428}
 --- !u!114 &6012575472276711431
@@ -73,8 +73,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc22e31bfaf6531ebba00624cbfb8e02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expire_time: 15
-  sensitivity: 0
+  expire_time: 20.7
+  sensitivity: 0.644
 --- !u!114 &7106660943818848899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,8 +100,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   expire_time: 15
-  smell_radius: 5
-  sensitivity: 0
+  smell_radius: 20.02
+  sensitivity: 1
 --- !u!114 &6021474894236140304
 MonoBehaviour:
   m_ObjectHideFlags: 0
