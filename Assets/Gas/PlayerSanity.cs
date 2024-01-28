@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerSanity : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class PlayerSanity : MonoBehaviour
     {
         if (currentSanity <= 0)
         {
-           //Destroy(gameObject);
+            SceneManager.LoadScene(3);
         }
         sanityBar.fillAmount = Mathf.Clamp(currentSanity/maxSanity,0,1);
     }
